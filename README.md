@@ -25,15 +25,15 @@ getBannerInfoInMongodb.py 直接查看所有的端口识别结果
 
     [root@localhost PortScanIdentification]# python getBannerInfoInMongodb.py 
     186.75.16.21	40810	ssh OpenSSH 6.6.1
-    137.50.3.42		40810	ssh OpenSSH 5.3
+    137.50.3.42     40810	ssh OpenSSH 5.3
     143.59.45.89	40810	ssh OpenSSH 6.6.1
     166.75.45.56	80		http Apache httpd 2.2.15
     116.75.55.56	40810	ssh OpenSSH 5.3
     156.75.16.165	80		http nginx
     146.75.12.93	80		http Apache httpd 2.2.15
-    136.75.6.82		80		http Apache httpd 2.2.15
+    136.75.6.82     80		http Apache httpd 2.2.15
     126.75.82.171	80		http Apache httpd 2.2.15
-    11.50.4.111		80		http Apache httpd 2.2.15
-    13.59.121.3		80		http nginx
+    11.50.4.111     80		http Apache httpd 2.2.15
+    13.59.121.3     80		http nginx
     13.59.111.193	80		http nginx
     
