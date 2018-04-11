@@ -32,4 +32,6 @@ class MyParsCheck(object):
                 myArgs.path = '/tools/ip.txt'
             if not os.path.exists(myArgs.path):
                 raise Exception('path {0} is not exists.'.format(myArgs.path))
+        if not myArgs.project:
+            raise Exception('project name is empty!')
         return myArgs

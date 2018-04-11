@@ -4,6 +4,7 @@
 # masscan scan result analysis class file
 
 import os
+import time
 from myipaddress import MyIpAddress
 
 try:
@@ -15,20 +16,22 @@ except ImportError:
 class MyMasscanAnalysis(object):
 
     @staticmethod
-    def analysis(xmlPath):
+    def analysis(xmlPath, projectName):
         if not os.path.exists(xmlPath):
             raise Exception('masscan scan result file not exists.')
         masscanResult = {
+            'project': projectName,
             'count': 0,
             'scanResult': None,
             'startTime': 0,
             'endTime': 0
         }
-        tree = ET.ElementTree(file=xmlPath)
         try:
+            tree = ET.ElementTree(file=xmlPath)
             root = tree.getroot()
         except:
-            return
+            masscanResult['endTime'] = int(time.time())
+            return masscanResult
         hostList = []
         for host in root:
             for address in host:

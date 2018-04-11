@@ -7,11 +7,12 @@ from mymasscananalysis import MyMasscanAnalysis
 
 
 class MyMasscan(object):
-    def __init__(self, scanIpFile, scanRate=2000):
+    def __init__(self, scanIpFile, projectName, scanRate=2000):
         self.masscanPath = '/usr/bin/masscan'
         self.outLogFile = '/tmp/myResult.xml'
         self.scanRate = scanRate
         self.scanIpFile = scanIpFile
+        self.projectName = projectName
         if not os.path.exists(self.masscanPath):
             raise Exception('masscan path:{0}, not found!'.format(self.masscanPath))
         if not os.path.exists(scanIpFile):
@@ -27,5 +28,5 @@ class MyMasscan(object):
     def scan(self):
         scanCommand = self.getScanCommand()
         os.system(scanCommand)
-        portInfo = MyMasscanAnalysis.analysis(self.outLogFile)
+        portInfo = MyMasscanAnalysis.analysis(self.outLogFile, self.projectName)
         return portInfo

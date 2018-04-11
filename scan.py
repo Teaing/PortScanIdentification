@@ -10,13 +10,14 @@ from lib.myparscheck import MyParsCheck
 from lib.mymasscan import MyMasscan
 from lib.mymongodb import MyMongodb
 from lib.mybanner import MyBanner
+from lib.mydict import MyDict
 
 
 def main():
     MyUid.checkPermissions()
     parsContent = MyArg.getArgparse()
     myArgparse = MyParsCheck.contentCheck(parsContent)
-    myMasscan = MyMasscan(myArgparse.path)
+    myMasscan = MyMasscan(myArgparse.path, myArgparse.project)
     portInfoContent = myMasscan.scan()
     print portInfoContent
 
@@ -26,17 +27,19 @@ def main():
 
     if not myArgparse.banner:
         return
-    scanResult = portInfoContent.get('scanResult')
-    print scanResult
 
-    myMongodb.delData()  # 清除Banner信息
+    scanResult = portInfoContent.get('scanResult')
+
+    if not scanResult:
+        return
 
     startTime = time.time()
     threadNum = 50
-    queue = Queue.Queue()
+    inputQueue = Queue.Queue()
+    outputQueue = Queue.Queue()  # 输出结果
 
     for i in range(threadNum):
-        t = MyBanner(queue)
+        t = MyBanner(inputQueue, outputQueue)
         t.setDaemon(True)
         t.start()
 
@@ -45,9 +48,25 @@ def main():
         portStr = ','.join(scanResult.get(ipAddress))
         queuePutInfo.append(ipAddress)
         queuePutInfo.append(portStr)
-        queue.put(queuePutInfo)
-    queue.join()
+        inputQueue.put(queuePutInfo)
 
+    inputQueue.join()
+
+    tmpBannerDict = {}
+    while not outputQueue.empty():
+        tmpBannerDict = MyDict.mergeDicts(tmpBannerDict, outputQueue.get())
+        outputQueue.task_done()
+
+    bannerResult = {
+        'project': myArgparse.project,
+        'count': len(tmpBannerDict),
+        'scanResult': tmpBannerDict,
+        'endTime': int(time.time())
+    }
+
+    myMongodb.insertInfo(bannerResult, collectionStr='BannerInfo')
+
+    print bannerResult
     print 'Over! used {0} second.'.format(int(time.time() - startTime))
 
 

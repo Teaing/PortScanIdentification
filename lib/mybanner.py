@@ -6,20 +6,23 @@
 import nmap
 import threading
 from myipaddress import MyIpAddress
-from mymongodb import MyMongodb
+
+
+# from mymongodb import MyMongodb
 
 
 class MyBanner(threading.Thread):
-    def __init__(self, queue):
+    def __init__(self, inputQueue, outputQueue):
         threading.Thread.__init__(self)
-        self.queue = queue
+        self.inputQueue = inputQueue
+        self.outputQueue = outputQueue
 
     def run(self):
         while True:
-            scanInfo = self.queue.get()
+            scanInfo = self.inputQueue.get()
             if scanInfo:
                 self.scan(scanInfo[0], scanInfo[1])
-            self.queue.task_done()
+            self.inputQueue.task_done()
 
     def scan(self, ipAddress, port):
         address = MyIpAddress.convertIp(ipAddress)
@@ -32,5 +35,8 @@ class MyBanner(threading.Thread):
             tmpInfo = dict.fromkeys([str(port)], '{0} {1} {2}'.format(portInfo.get('name'), portInfo.get('product'),
                                                                       portInfo.get('version')).strip())
             scanResult[ipAddress].append(tmpInfo)
+        self.outputQueue.put(scanResult)  # 结果压入输出队列
+        '''
         myMongodb = MyMongodb()
         myMongodb.insertInfo(scanResult, collectionStr='BannerInfo')
+        '''
