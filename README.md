@@ -2,19 +2,22 @@
 版本: V1.0  
 一款扫描指定IP地址，获取开放端口并且识别端口服务的脚本
 
-
     [root@localhost PortScanIdentification]# python scan.py -h
-    usage: scan.py [-h] [-path PATH] [-url URL] [-banner]
+    usage: scan.py [-h] [-path PATH] [-url URL] [-project PROJECT] [-banner]
     
     optional arguments:
       -h, --helpshow this help message and exit
       -path PATH, --path PATH
-    filePath default:/tools/ip.txt
+    						filePath default:/tools/ip.txt
       -url URL, --url URL   url address
+      -project PROJECT, --project PROJECT
+							project name e.g:xxxx
       -banner, --banner get port banner info.
+    
 ### 参数说明:
 -path 指定masscan需要的iL的地址(扫描的IP文件)  
 -url 下载URL的内容到/tmp/myIp.txt 并且iL的值为/tmp/myIp.txt  
+-project 项目名称,必须指定  
 -banner 识别端口服务,结果会存入Mongodb
 
 ### 脚本流程：
@@ -23,7 +26,7 @@
 
 getBannerInfoInMongodb.py 直接查看所有的端口识别结果
 
-    [root@localhost PortScanIdentification]# python getBannerInfoInMongodb.py 
+    [root@localhost PortScanIdentification]# python getBannerInfoInMongodb.py xxxx 
     186.75.16.21	40810	ssh OpenSSH 6.6.1
     137.50.3.42     40810	ssh OpenSSH 5.3
     143.59.45.89	40810	ssh OpenSSH 6.6.1
